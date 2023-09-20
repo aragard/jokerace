@@ -747,40 +747,40 @@ top_n(20)
 
 And the top nouns:
 
-    
-    ```r
-    # Top 20 nouns
-      top_nouns &lt;- tokens %&gt;%
-    filter(upos %in% c("NOUN")) %&gt;%
-    select(word)%&gt;%
-    count(word, sort = TRUE) %&gt;%
-    top_n(20)
-    ```
+
+```r
+# Top 20 nouns
+top_nouns &lt;- tokens %&gt;%
+filter(upos %in% c("NOUN")) %&gt;%
+select(word)%&gt;%
+count(word, sort = TRUE) %&gt;%
+top_n(20)
+```
 
 ---
 
 ## Output CSVs
 
 Now are we are ready to output CSVs containing the n-grams, top nouns and top verbs:
-    
-    ```r
-    # Create folder if it doesn't exist
-      dir.create("./ngrams", showWarnings = FALSE)
-    
-      # Ngrams
-      write_csv(top_20_unigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_unigrams.csv"))
-      write_csv(top_20_bigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_bigrams.csv"))
-      write_csv(top_20_trigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_trigrams.csv"))
-      write_csv(top_20_fourgrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_fourgrams.csv"))
-    
-      # Create folder if it doesn't exist
-      dir.create("./pos", showWarnings = FALSE)
-    
-      # Parts of Speech
-      write_csv(top_verbs, paste0("./pos/", contestdf$Slug[idx], "_top_verbs.csv"))
-      write_csv(top_nouns, paste0("./pos/", contestdf$Slug[idx], "_top_nouns.csv"))
-    }
-    ```
+
+```r
+# Create folder if it doesn't exist
+dir.create("./ngrams", showWarnings = FALSE)
+
+# Ngrams
+write_csv(top_20_unigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_unigrams.csv"))
+write_csv(top_20_bigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_bigrams.csv"))
+write_csv(top_20_trigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_trigrams.csv"))
+write_csv(top_20_fourgrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_fourgrams.csv"))
+
+# Create folder if it doesn't exist
+dir.create("./pos", showWarnings = FALSE)
+
+# Parts of Speech
+write_csv(top_verbs, paste0("./pos/", contestdf$Slug[idx], "_top_verbs.csv"))
+write_csv(top_nouns, paste0("./pos/", contestdf$Slug[idx], "_top_nouns.csv"))
+}
+```
 
 ---
 

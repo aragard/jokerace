@@ -709,36 +709,36 @@ top_n(20)
 
 And the top nouns:
 
-    ```{r eval= FALSE}
-    # Top 20 nouns
-  top_nouns <- tokens %>%
-    filter(upos %in% c("NOUN")) %>%
-    select(word)%>%
-    count(word, sort = TRUE) %>%
-    top_n(20)
-    ```
+```{r eval= FALSE}
+# Top 20 nouns
+top_nouns <- tokens %>%
+filter(upos %in% c("NOUN")) %>%
+select(word)%>%
+count(word, sort = TRUE) %>%
+top_n(20)
+```
 
 ---
 
 ## Output CSVs
 
 Now are we are ready to output CSVs containing the n-grams, top nouns and top verbs:
-    ```{r eval= FALSE}
-    # Create folder if it doesn't exist
-  dir.create("./ngrams", showWarnings = FALSE)
+```{r eval= FALSE}
+# Create folder if it doesn't exist
+dir.create("./ngrams", showWarnings = FALSE)
 
-  # Ngrams
-  write_csv(top_20_unigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_unigrams.csv"))
-  write_csv(top_20_bigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_bigrams.csv"))
-  write_csv(top_20_trigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_trigrams.csv"))
-  write_csv(top_20_fourgrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_fourgrams.csv"))
+# Ngrams
+write_csv(top_20_unigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_unigrams.csv"))
+write_csv(top_20_bigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_bigrams.csv"))
+write_csv(top_20_trigrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_trigrams.csv"))
+write_csv(top_20_fourgrams, paste0("./ngrams/", contestdf$Slug[idx], "_top_fourgrams.csv"))
 
-  # Create folder if it doesn't exist
-  dir.create("./pos", showWarnings = FALSE)
+# Create folder if it doesn't exist
+dir.create("./pos", showWarnings = FALSE)
 
-  # Parts of Speech
-  write_csv(top_verbs, paste0("./pos/", contestdf$Slug[idx], "_top_verbs.csv"))
-  write_csv(top_nouns, paste0("./pos/", contestdf$Slug[idx], "_top_nouns.csv"))
+# Parts of Speech
+write_csv(top_verbs, paste0("./pos/", contestdf$Slug[idx], "_top_verbs.csv"))
+write_csv(top_nouns, paste0("./pos/", contestdf$Slug[idx], "_top_nouns.csv"))
 }
 ```
 
