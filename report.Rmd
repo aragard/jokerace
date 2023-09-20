@@ -21,44 +21,40 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.align =
 
 ## Sidenote
 
-If you're ready to get started right away, you can skip straight to the "Getting Section". The tutorial consists of two main parts: "Part 1: Topic Analysis" and " Part 2: High-level Text Analysis" (ie. "n-grams" and "POS Tagging"). For intermediate students (ie. ideally students who have already worked on at least one other case study), feel free to skip directly to these sections.
+If you're ready to get started right away, you can skip straight to the "Getting Started" Section. The tutorial consists of two main parts: "Part 1: Topic Analysis" and " Part 2: High-level Text Analysis" (ie. "n-grams" and "POS Tagging"). For intermediate students (ie. ideally students who have already worked on at least one other case study), feel free to skip directly to these sections.
 ---
 
 ## Introduction
 
-This tutorial will walk you through the process we took in order to produce the text analysis for the Arbitrum JokeRaces. Our aim in this case study is to perform some text analysis on responses to something called a "JokeRace" (defined in the next section). We intend to capture all of the submissions so that we can analyze them to understand common themes across the responses by getting a feel for the amount of noise, performing a topic analysis to better understand what was said and performing some basic text analysis to extract the main thoughts of each race without having to read every post.
+This tutorial will walk you through the process we took in order to produce the text analysis for the Arbitrum JokeRaces. Our aim in this case study is to perform some text analysis on responses to something called a "JokeRace" (defined in the next section). We captured all of the submissions ([dataset available here](https://docs.google.com/spreadsheets/d/17Evor8Xl5_Ks9OpifEQxARS6MfsvU1sUTM54tS1JK8c/edit#gid=705342398)) so that we could analyze them to find common themes across the responses by getting a feel for the amount of noise, perform a topic analysis to better understand what was said and perform some basic text analysis to extract the main thoughts for each race without having to read every single post.
 
 ---
 
 ## Arbitrum
 
-**Arbitrum** is a Layer 2 scaling solution for the Ethereum blockchain that aims to address the limitations of the Ethereum network, such as slow transaction speeds and high fees, particularly during times of high activity. It is designed to improve the speed of transactions, increase scalability, and reduce costs. The layer 2 Arbitrum (\$ARB) released their governance token a few months back. Now that they have both a product (The L2 Arbitrum) and a token. Plurality labs proposed one of two grant proposal designed to help with "sense-making" for the DAO, ie. creating an overarching mission. Our objective is to assist the DAO in setting an agenda that reflects the goals, mission and vision of the community.
+**Arbitrum** is a Layer 2 scaling solution for the Ethereum blockchain that aims to address the limitations of the Ethereum network, such as slow transaction speeds and high fees (particularly during times of high activity). It is designed to improve the speed of transactions, increase scalability, and reduce costs. The layer 2 Arbitrum released their governance token a few months back. Now that they have both have products (principally the L2 Arbitrum Rollup) and a token (\$ARB). Plurality labs proposed one of two grant proposals designed to help with "sense-making" for the DAO, ie. creating an overarching mission. Our objective is to assist the DAO in setting an agenda that reflects the goals, mission and vision of the community. For supplementary reading on the DAO and the products they are building, [A gentle introduction to Arbitrum](https://docs.arbitrum.io/intro) is a good starting place while [Arbitrum DAO: A conceptual overview](https://docs.arbitrum.foundation/concepts/arbitrum-dao) has more information on the DAO. We encourage you to skim these readings so that you can derive more meaningful interpretations from your results later on.
 
 ---
 
 ## JokeRaces
 
-A **JokeRace** is a survey platform that incentives participation by paying people for their opinions. People are prompted to respond to some query, for which the JokeRace then follows a schedule where submissions are open, and then closed while people vote. For each jokerace, approximately, 5,000 submissions were collected for a total of 20,000 responses.
+A **JokeRace** is a survey platform that incentives participation by paying people for their opinions. People are prompted to respond to some query, for which the JokeRace then follows a schedule where submissions are open, and then closed while people vote. For each JokeRace, approximately, 5,000 submissions were collected for a total of 20,000 responses.
 
-There are four (4) jokeraces, each asking as a separate question about what the ARB DAO should do in the future:
+There are four (4) JokeRaces, each asking as a separate question about what the ARB DAO should do in the future:
 
-1.  ArbitrumDAO Short-term Strategic Priorities (Reduce Friction) - 
-0xbf47BDA4b172daf321148197700cBED04dbe0D58
 
-2.  ArbitrumDAO Long-term Strategic Priorities (Growth and Innovation) - 
-0x5D4e25fA847430Bf1974637f5bA8CB09D0B94ec7
-
-3.  ArbitrumDAO Northstar Strategic Framework: Vision - 
-0x0d4C05e4BaE5eE625aADC35479Cc0b140DDF95D4
-
-4.  ArbitrumDAO Northstar Strategic Framework: Mission - 
-0x5a207fA8e1136303Fd5232E200Ca30042c45c3B6
+| JokeRace Contest Name                                              | Contract Address                           |
+|--------------------------------------------------------------------|--------------------------------------------|
+| ArbitrumDAO Short-term Strategic Priorities (Reduce Friction)      | 0xbf47BDA4b172daf321148197700cBED04dbe0D58 |
+| ArbitrumDAO Long-term Strategic Priorities (Growth and Innovation) | 0x5D4e25fA847430Bf1974637f5bA8CB09D0B94ec7 |
+| ArbitrumDAO Northstar Strategic Framework: Vision                  | 0x0d4C05e4BaE5eE625aADC35479Cc0b140DDF95D4 |
+| ArbitrumDAO Northstar Strategic Framework: Mission                 | 0x5a207fA8e1136303Fd5232E200Ca30042c45c3B6 |
 
 ---
 
 ## Data Collection
 
-Our initial job was to collect the dataset. We found the contract for each jokerace and then queried each of the transactions, for which we pulled out the data from each. We queried Dune Dashboards to extract all of the transactions for the 4 contracts in question:
+Our initial job was to collect the dataset ([available here](https://docs.google.com/spreadsheets/d/17Evor8Xl5_Ks9OpifEQxARS6MfsvU1sUTM54tS1JK8c/edit#gid=705342398)). We found the contract for each jokerace and then queried each of the transactions, for which we pulled out the data from each. We queried Dune Dashboards to extract all of the transactions for the 4 contracts in question:
 
 ``` sql
 SELECT * FROM arbitrum.logs
@@ -75,29 +71,25 @@ AND topic0 =
 
 ## Data Preview
 
-The final dataset can be found [here](https://docs.google.com/spreadsheets/d/17Evor8Xl5_Ks9OpifEQxARS6MfsvU1sUTM54tS1JK8c/edit#gid=705342398) in a spreadsheet. 
-
 Below are the headings of the csv columns:
 
--   BlockTime - When the Submission hit the blockchain
-
--   Contract - Which Jokerace was this submission for
-
--   Address - The Wallet address of the submittor
-
--   Slug - an ID
-
--   URL - URL of the Submission
-
--   IsImage - Whether it had an image
-
--   Content - The Text submission
+| Heading     | Description                            |
+|-------------|----------------------------------------|
+| `BlockTime` | When the Submission hit the blockchain |
+| `Contract`  | Which JokeRace was this submission for |
+| `Address`   | The wallet address of the submitter    |
+| `Slug`      | An ID                                  |
+| `URL`       | URL of the submission                  |
+| `IsImage`   | Whether it had an image                |
+| `Content`   | The text submission                    |
 
 ---
 
 ## Getting Started
 
-In this tutorial, we will use the following R packages/ libraries:
+### Libraries for Topic Analysis
+
+In this tutorial, we will use the following R packages/ libraries to perform topic analysis:
 
 ```{r}
 # Load packages
@@ -115,6 +107,17 @@ library(lda)
 library(ldatuning)
 library(flextable)
 library(stringi)
+```
+
+---
+
+
+### Libraries for High-level Text Analysis
+
+We use the following R packages/ libraries for our high-level text-analysis:
+
+```{r}
+# Load packages
 library(tidytext)
 library(dplyr)
 library(purrr)
@@ -122,10 +125,10 @@ library(udpipe)
 library(tidyr)
 library(stringr)
 library(readr)
-
 ```
 
 If you need additional guidance getting set up, please refer to our earlier tutorials on getting using R Studio and R.
+
 ---
 
 ## Loading Data
@@ -137,16 +140,16 @@ The first step (after loading the libraries) is to load the data into the curren
 propfinal <- readRDS("./propfinal.RDS")
 ```
 
-The data is provided as an RDS file called "propfinal.RDS". RDS is an R binary storage format that can be directly read into the current session using the `readRDS()` function call.
+The data is provided as an RDS file called "propfinal.RDS". RDS is an R binary storage format that can be read directly into the current session using the `readRDS()` function call.
 
-When you check `head(propfinal)`, the output in console should look like below:
-<add screenshot of dataset>
+You can view the file in a spreadsheet application like Excel or use `head(propfinal)` to preview the data. the contents of the CSV look like below:
+<img src="./images/propfinal.png" alt="Propfinal CSV Screenshot" width="100%" height="100%">
 
 ---
 
 ## Stopwords
 
-Next, we can download common English "stopwords", save in a vector and add our own stopwords such as "arbitrumdao", "arbitrum", etc. These are words that we expect to see during our analysis and you can add new ones to filter out words that don't add new valuable information during when you are interpreting your results.
+Next, we can download common English "stopwords", save them in a vector and add our own stopwords such as "arbitrumdao", "arbitrum", etc. These are words that we expect to see during our analysis. You can add new stopwords to further fine tune the results and remove noise that doesn't add new informational value during your interpretation of the outputs.
 
 ``` {r}
 english_stopwords <- readLines("https://slcladal.github.io/resources/stopwords_en.txt", encoding = "UTF-8")
@@ -161,19 +164,20 @@ english_stopwords <- c(english_stopwords,c("arbitrumdao","arbitrum","project","a
 
 ## Topic Analysis
 
-**Topic Analysis** consists of methods (ex. LDA, NMF, etc.) that are used identify and extract topics or themes from a corpus (a collection of documents or text data). It's a valuable tool for organizing, summarizing, and understanding large volumes of text. Latent Dirichlet Allocation (LDA) is a common technique for topic modelling and the method used in this case study. We performed Topic Analysis using LDA on each respective JokeRace to ascertain the common themes within each race.
+**Topic Analysis** consists of methods (ex. LDA, NMF, etc.) that are used to identify and extract topics or themes from a corpus (a collection of documents or text data). It's a valuable tool for organizing, summarizing, and understanding large volumes of text. Latent Dirichlet Allocation (LDA) is a common technique for topic modelling and the method used in this case study. We performed Topic Analysis using LDA on each respective JokeRace to ascertain the common themes within each race.
 
-// explain LDA and the DTM (refer to tutorial)
+A more detailed explanation of Topic Analysis methods is beyond the scope of this tutorial but [here](https://ladal.edu.au/topicmodels.html) is a good supplementary resource on Topic Analysis using LDA.
 
 ---
 ## Choosing Number of Topics
 
-We will create a dataframe of dataframes called "contestdf" that allows us to do main tasks:
+We will create a dataframe of dataframes called "contestdf" that allows us to do two (2) main tasks:
 
 1. Keep track of which jokerace the topics belong to
+
 2. keep track of the number of topics we are using for the analysis
 
-Using a newer method of selecting the topics involving a mini-max approach across two metrics.
+In this tutorial, we utilize a newer method of selecting the topics involving a mini-max approach across two metrics. In the subsequent slides, we will briefly walkthrough the plots for these metrics. It is a pretty simple method to interpret so once you read the first graph, feel welcome to interpret the other subsequent plots and see if your intuition matches our answers.
 
 ---
 
@@ -186,7 +190,7 @@ There were 1463 submissions and the DTM had a vocab of 763.
 <img src="./images/minmax_1.png" alt="Minmax Results 1" width="50%" height="50%">
 
 #### Interpretation
- To determine the optimal number of topics we simply choose a point that minimizes the top plot while maximizing the bottom plot so here we select 4 topics.
+ To determine the optimal number of topics we simply choose a point that minimizes the top plot while maximizing the bottom plot so here we select 4 topics (If you're unfamiliar with DTMs refer to the "Compute DTM" section).
 
 ---
 
@@ -194,7 +198,7 @@ There were 1463 submissions and the DTM had a vocab of 763.
 
 **Contract: 0x5d4e25fa847430bf1974637f5ba8cb09d0b94ec7**
 
-There were 1582 submissions and the DTM had a vocab of 818 (If you're unfamiliar with DTMs refer to the "Compute DTM" section).
+There were 1582 submissions and the DTM had a vocab of 818.
 
 <img src="./images/minmax_2.png" alt="Minmax Results 2" width="50%" height="50%">
 
@@ -214,7 +218,7 @@ There were 1519 submissions and the DTM had a vocab of 746.
 
 #### Interpretation
 
-Based on the plots we can select 7 or 10 topics so we will create two separate dataframes (ie. V7 and V11) to keep track of both separately so we can compare the results easily.
+Based on the plots, we can select 7 or 10 topics so we will create two separate dataframes (ie. V7 and V10) to keep track of both separately so we can compare the results easily.
 
 ---
 
@@ -248,21 +252,26 @@ contestdf <- do.call(rbind,list(
               )
 ```
 
+---
+
+## Contest Dataframe Slugs
+
 The six (6) dataframes contained within contestdf are summarized below:
 
-1. RF4 - Topic of that submission for the Reduce Friction Race using 4 topics
-2. GI5 - Topic of that submission for the Growth and Innovation Race using 5 topics
-3. V7 - Topic of that submission for the Vision Race using 7 topics
-4. V10 - Topic of that submission for the Vision Race using 10 topics
-5. M11 - Topic of that submission for the Mission Race using 11 topics
-6. M15 - Topic of that submission for the Mission Race using 15 topics
-
+| Slug  | Topic of that Submission                  |
+|-------|-------------------------------------------|
+| `RF4` | Reduce Friction Race using 4 topics       |
+| `GI5` | Growth and Innovation Race using 5 topics |
+| `V7`  | Vision Race using 7 topics                |
+| `V10` | Vision Race using 10 topics               |
+| `M11` | Mission Race using 11 topics              |
+| `M15` | Mission Race using 15 topics              |
 
 ---
 
 ## Save Topic Analysis Results
 
-Since we effectively have to perform topic analysis six times (once for each dataframe RF4, GI5, etc.), we will use a main for loop and save the results in a variable located outside of the body of this for loop.
+Since we effectively have to perform topic analysis six times (once for each dataframe RF4, GI5, etc.), we will use a main for-loop and save the `results` in a variable located outside of the body of this for-loop (see next slide to see how the loop is set up).
 
 ```{r}
 # Save Topic Modelling Results
@@ -274,14 +283,14 @@ Here we are creating one-column matrix containing 50 rows, converting it to a on
 
 ---
 
-## Setting up Main For-Loop
+## Setting up Main For-Loop for Topic Analysis
 
-We set up the main for-loop to loop through each of the 6 rows in `contestdf` to keep track of which jokerace we are currently working on ie. when idx has the value of '1', it is referring to RF4, when idx has the value of '2', we are working on GI5, etc.
+We set up the main for-loop to loop through each of the 6 rows in `contestdf` to keep track of which jokerace we are currently working on (ie. when idx has the value of '1', it is referring to RF4, when idx has the value of '2', we are working on GI5, etc.).
 
 ```{r}
 for(idx in 1:nrow(contestdf))
 {
-  # Topic Analysis will go here
+  # Topic Analysis code will go here
 }
 ```
 
@@ -289,7 +298,7 @@ for(idx in 1:nrow(contestdf))
 
 ## Data Cleaning
 
-If you examine the propfinal dataframe, you will notice that the data still needs cleaning. We need to remove HTML tags, stem words and duplicates as well as filter out low quality submissions to get high quality results. Below is the code that we used to creata a corpus while cleaning the data within the same breath. We will split up this code and explain it in the next couple slides.
+If you inspect the propfinal dataframe with a close eye, you will notice that the data still needs cleaning. We need to remove HTML tags, stem words and duplicates as well as filter out low quality submissions to get high quality results. Below is the code that we used to creata a corpus while cleaning the data. We will split up this code and explain it in the next couple slides.
 
 ```{r}
 textdata <- propfinal$ContentParsed[propfinal$Contract==contestdf$Address[idx]]
@@ -304,7 +313,7 @@ corpus <- Corpus(DataframeSource(textdata))
 
 ### Extracting Textdata from Propfinal Dataframe
 
-The first lines of code that we will add to the body of the loop are for extracting the text data from the "Content" column of `propfinal`. Recall that propfinal contains all the data while `contestdf` allows us to keep track of the respective JokeRace contracts and the number of topics to perform topic analysis. In the first line, we take all of the text data concerning this contract and store in an appropriately named variable named `textdata`. In the second line, we encode this data as "bytes".
+The first lines of code that we will add to the body of the loop are for extracting the text data from the "Content" column of `propfinal`. Recall that `propfinal` contains all the data while `contestdf` allows us to keep track of the respective JokeRace contracts and the number of topics to perform topic analysis. In the first line, we take all of the text data concerning this contract and store in an appropriately named variable named `textdata`. In the second line, we encode this data as "bytes".
 
 ```{r}
 textdata <- propfinal$ContentParsed[propfinal$Contract==contestdf$Address[idx]]
@@ -323,7 +332,7 @@ This is 43 characters This is 43 characters
 This is 84 characters This is 84 characters This is 84 characters This is 84 characters
 ```
 
-We determined that we could safely filter out some of the noise by removing submissions containing less than 40 characters since it is difficult to say anything meaning with that amount of brevity. This occurs in the first line in the following code snippet. In the second line, we remove duplicates to further reduce noise. Rudimentary analysis using excel revealed that nearly 50% of the responses were duplicates.
+We determined that we could safely filter out some of the noise by removing submissions containing less than 40 characters since it is difficult to say anything meaningful with that level of brevity. This occurs in the first line in the following code snippet. In the second line, we remove duplicates to further reduce noise. Rudimentary analysis using Excel revealed that nearly 50% of the responses were duplicates.
 
 ``` {r}
 textdata <- textdata[nchar(textdata)>40]
@@ -334,7 +343,7 @@ textdata <- textdata[!(textdata %in% names(which(table(textdata)>1)))]
 
 ### Creating Corpus
 
-As mentioned earlier, the **corpus** contains the body of textual data that will be used for analysis. For explanation purposes, let us assume that idx has the value of '1' which refers to RF4" or contract `0xbf47bda4b172daf321148197700cbed04dbe0d58` for "Reduce Friction" and 4 topics. This code creates a dataframe containing three (3) columns called 'Contest', 'doc_id' and 'text'. This dataframe is then used to create the corpus that we will use to perform our topic analysis. The `Corpus` function from the `tm` text mining package does the work involved in converting the `textdata` into a `corpus`.
+As mentioned earlier, the **corpus** contains the body of textual data that will be used for analysis. This code creates a dataframe containing three (3) columns called 'Contest', 'doc_id' and 'text'. This dataframe is then used to create the corpus that we will use to perform our topic analysis. The `Corpus` function from the `tm` text mining package does the work involved in converting the `textdata` into a `corpus`.
 
 ```{r}
 textdata <- data.frame(Contest = contestdf$Name[idx],doc_id = 1:length(textdata),text = textdata)
@@ -345,7 +354,7 @@ corpus <- Corpus(DataframeSource(textdata))
 
 ## Preprocessing
 
-Below is code to create a pre-processing chain to pre-process the text data stored in the corpus. Each step in the chain applies a specific text pre-processing operation from the `tm_map` function to clean and prepare the text data. The operations are self-explanatory. In order of the lines of code in the chain, we are performing the following operations on the corpus:
+Below is code to create a pre-processing chain to pre-process the text data stored in the corpus. Each step in the chain applies a specific text pre-processing operation from the `tm_map` function to clean and prepare the text data. The operations are self-explanatory. We are performing the following operations on the corpus (in order):
 
 1. Converting everything to lowercase
 2. Removing English stopwords
@@ -384,7 +393,7 @@ A **document-term matrix (DTM)** is a numerical representation of text data wher
 
 ## Removing Empty Rows
 
-Empty rows in the DTm can cause issues in the LDA algorithm so we must remove them.
+Empty rows in the DTM can cause issues in the LDA algorithm so we must remove them.
 
 ```{r}
   # due to vocabulary pruning, we have empty rows in our DTM
@@ -399,7 +408,7 @@ Empty rows in the DTm can cause issues in the LDA algorithm so we must remove th
 
 ## Latent Dirichlet Allocation (LDA) Algorithm
 
-LDA is a topic modelling technique that is performed on a DTM created from a corpus. The first line extracts the number of topics from the current dataframe. Recall that each row in the contestdf contains a dataframe with a contract "Address", the "Name" of a given JokeRace, a "Slug" used to uniquely identify each dataframe, and the number of "Topics". The second line sets the seed for the random number generator. Setting the seed ensures that the LDA results are reproducible. In the third line, the LDA model is computed using the Gibbs sampling method using 5000 iterations and displaying progress outputs every 25 iterations.
+LDA is a topic modelling technique that is performed on a DTM created from a corpus. The first line extracts the number of topics from the current dataframe. Recall that each row in `contestdf` contains a dataframe with a contract "Address", the "Name" of a given JokeRace, a "Slug" used to uniquely identify each dataframe, and the number of "Topics". The second line sets the seed for the random number generator. Setting the seed ensures that the LDA results are reproducible. In the third line, the LDA model is computed using the Gibbs sampling method using 5000 iterations and displaying progress outputs every 25 iterations.
 
 ```{r, eval=FALSE}
 # number of topics
@@ -414,7 +423,7 @@ LDA is a topic modelling technique that is performed on a DTM created from a cor
 
 ## Examine and Store LDA Results
 
-The first line calculates the posterior distributions of topics for the documents in the LDA model. The second line stores the temporary results in `result_t`. The third line assigns column names to the `result_t` dataframe. The column headings are created based on the slug, and the index of each topic. An example of a heading is "RF4_Topic_1". This naming scheme allow us to associate each word in a given column with specific topics and contests. For RF4, there will be 4 columns in total. For GI5, there will be 5 columns in total, etc. Line 4 appends the columns in `result_t` to `results`. Line 5 prints the value `idx` representing the current iteration so that we can have some feedback in the console when the loop is running for debugging.
+The first line calculates the posterior distributions of topics for the documents in the LDA model. The second line stores the temporary results in `result_t`. The third line assigns column names to the `result_t` dataframe. The column headings are created based on the slug, and the index of each topic. An example of a heading is "RF4_Topic_1". This naming scheme allow us to associate each word in a given column with specific topics and contests. For RF4, there will be 4 columns in total. For GI5, there will be 5 columns in total, etc. Line 4 appends the columns in `result_t` to `results`. Line 5 prints the value `idx` representing the current iteration so that we can have some feedback in the console when the loop is running for debugging purposes.
 
 ``` {r, eval=FALSE}
 # have a look at some of the results (posterior distributions)
@@ -429,7 +438,7 @@ The first line calculates the posterior distributions of topics for the document
 
 ## Final Body of For-Loop
 
-Combing the above code should result in the following code within the body of the for-loop.
+Combining all of the topic analysis code should result in the following code within the body of the for-loop.
 
 ```{r, eval=FALSE}
 for(idx in 1:nrow(contestdf))
@@ -452,7 +461,13 @@ for(idx in 1:nrow(contestdf))
   processedCorpus <- tm_map(processedCorpus, removeNumbers)
   processedCorpus <- tm_map(processedCorpus, stemDocument, language = "en")
   processedCorpus <- tm_map(processedCorpus, stripWhitespace)
+```
 
+---
+
+## Final Body of For-Loop (cont'd 1)
+
+```{r, eval=FALSE}
   ########################################################################
   ## Topic Modelling
   ########################################################################
@@ -476,7 +491,12 @@ for(idx in 1:nrow(contestdf))
   set.seed(9161)
   # compute the LDA model, inference via 1000 iterations of Gibbs sampling
   topicModel <- LDA(DTM, K, method="Gibbs", control=list(iter = 5000, verbose = 25))
+```
 
+---
+
+## Final Body of For-Loop (cont'd 2)
+```{r, eval=FALSE}
   # have a look at some of the results (posterior distributions)
   tmResult <- posterior(topicModel)
   result_t <- as.data.frame(terms(topicModel, 50))
@@ -495,7 +515,7 @@ Outside of the body of the for-loop,the `results` are saved in a csv named "Topi
 The csv should look like this:
 <img src="./images/topics.png" alt="Topic CSV Screenshot" width="100%" height="100%">
 
-Put this code outside the body of the main for-loop:
+Put this code outside the body of the main for-loop and run the script in Rstudio and view the csv to see the results of your topic analysis. 
 
 ```{r, eval=FALSE}
 # Output Topics
@@ -506,11 +526,25 @@ write_csv(results,"./TopicTerms.csv")
 
 # Part 2: High-level Text Analysis
 
+## Setting up Main For-Loop for Ngrams and POS Tagging
+
+We will generate n-grams and perform POS tagging on each of the four (4) contests. We set up the main for-loop to loop through each of the 4 unique contests in `contestdf` (ie. RF4, GI5, V7 and M11). Since we are not performing topic analysis in this section we can skip V10 and M15 (ie. rows 4 and 6 in `contestdf`).
+
+```{r}
+for(idx in 1:nrow(contestdf))
+{
+  if (idx != 4 && idx != 6 && idx != nrow(contestdf))
+    {
+    # Text Analysis will go here
+    }
+}
+```
+
 ---
 
 ## n-grams
 
-An **ngram** is just a number indicating the number of words in a sequence ie. 1-gram is 1 word, 2 grams are 2 words, 3 grams are 3 word sequences, etc. It is a continguous sequence of n items (ie. characters, words, etc.) extracted from a given text or sentence. We used the top n-grams under each JokeRace to perform a high-level analysis. For example, looking at trigrams (3-grams) for growth and innovation, the phrase "long term strategic", "layer 2 scaling" and "regular security audits" were some of the most frequenctly occurring, suggesting that's where Growth and Innovation should focus ie. scaling but in a secure manner.
+An **ngram** is just a number indicating the number of words in a sequence (ie. 1-gram is 1 word, 2 grams are 2 words, 3 grams are 3 word sequences, etc.). It is a continguous sequence of n items (ie. characters, words, etc.) extracted from a given text or sentence. We used the top n-grams under each JokeRace to perform a high-level analysis. For example, looking at trigrams (3-grams) for growth and innovation, the phrase "long term strategic", "layer 2 scaling" and "regular security audits" were some of the most frequenctly occurring, suggesting that's where Growth and Innovation should focus ie. scaling but in a secure manner (see image below).
 
 <img src="./images/GI_trigrams.png" alt="GI Trigrams" width="15%" height="15%">
 
@@ -533,7 +567,7 @@ This code uses the `unnest_tokens` function from the `tidytext` package to creat
     top_n(20)
 ```
 
-We use similar code to create , 2-grams, 3-grams and 4-grams.
+We use similar code to create , 2-grams, 3-grams and 4-grams (see next 3 slides).
 
 ---
 
@@ -603,15 +637,17 @@ top_n(20)
 ## POS Tagging
 **Parts of Speech (POS)** tagging involves determing the POS (ie. nouns, verbs, adjectives, adverbs, etc.) of each word in a sentence or text.
 
-We performed POS tagging to identify the top nouns and the top verbs. We used nouns as a proxy for what "things" are important and verbs as a proxy for what "actions" are important.
+We performed POS tagging to identify the top nouns and the top verbs. We used nouns as a proxy for what *things* are important and verbs as a proxy for what *actions* are important.
 
 For instance, looking at "Reduce Friction races:
 
 <img src="./images/pos.png" alt="POS" width="25%" height="25%">
 
-We see that "community" and "users" are big focuses for the comments left by DAO members while they want to "ensure", "create", "provide" and "decentralize" some of the actions that should be taken.
+We see that "community" and "users" are big focuses based on the comments left by DAO members while they want to "ensure", "create", "provide" and "decentralize" some of the actions that should be taken.
 
 ---
+
+### Tokenise the Text Data
 
 Tokenisation involves breaking text into individual words or tokens. We use the `unnest_tokens` function to tokenise the `textdata` before we remove non-alphanumeric characters, empty rows and English stopwords.
 
@@ -623,7 +659,11 @@ Tokenisation involves breaking text into individual words or tokens. We use the 
     filter(!word %in% english_stopwords)
 ```
 
-We will use the `udpipe` package for POS tagging by downloading a pre-trained language model for English called "english-ewt".
+---
+
+### Load Model
+
+We will use the `udpipe` package for POS tagging by downloading a pre-trained language model for English called "english-ewt". Place this code outside of the body of the main for-loop to avoid it being re-downloaded during every iteration.
 
 ```{r eval= FALSE}
 # Load a model for 'udpipe'
@@ -631,7 +671,11 @@ udmodel <- udpipe_download_model(language = "english-ewt")
 udmodel <- udpipe_load_model(file = udmodel$file_model)
 ```
 
-The following code uses the pre-trained model to annotate the tokenise text dataset, `tokens`, convert the annotations to a dataframe and join these annotatoins back to `tokens`.
+---
+
+### Tag Tokens with Part of Speech
+
+The following code uses the pre-trained model to annotate  `tokens` (the tokenised text dataset), convert the annotations to a dataframe and join these annotations back to `tokens`.
 ```{r eval= FALSE}
 # Use the model to annotate the 'word' column
 annotations <- udpipe_annotate(udmodel, x = tokens$word)
@@ -648,6 +692,8 @@ tokens <- tokens %>%
 
 ## Top 20 Verbs
 
+Let's generate the top verbs:
+
 ```{r eval= FALSE}
 # Top 20 verbs
 top_verbs <- tokens %>%
@@ -659,7 +705,9 @@ top_n(20)
  
 ---
 
-Top 20 Nouns
+## Top 20 Nouns
+
+And the top nouns:
 
     ```{r eval= FALSE}
     # Top 20 nouns
@@ -672,7 +720,9 @@ Top 20 Nouns
 
 ---
 
-    ## Output CSVs
+## Output CSVs
+
+Now are we are ready to output CSVs containing the n-grams, top nouns and top verbs:
     ```{r eval= FALSE}
     # Create folder if it doesn't exist
   dir.create("./ngrams", showWarnings = FALSE)
@@ -691,3 +741,9 @@ Top 20 Nouns
   write_csv(top_nouns, paste0("./pos/", contestdf$Slug[idx], "_top_nouns.csv"))
 }
 ```
+
+---
+
+## Conclusion
+
+Congratulations! You just performed text analysis including Topic Modelling, n-grams and POS tagging on the Arbitrum DAO JokeRace contest. For your next steps, review the slides on Topic Modelling, n-grams and POS tagging for examples of how to interpret the final results, see if you can come up with your own interpretations.
